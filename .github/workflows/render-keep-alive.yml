@@ -21,12 +21,22 @@ jobs:
           RENDER_HEALTH_URL: ${{ vars.RENDER_HEALTH_URL }}
         run: |
           if [ -z "$RENDER_HEALTH_URL" ]; then
-            echo "RENDER_HEALTH_URL is not configured"
+            echo "ERROR: RENDER_HEALTH_URL variable is missing"
             exit 1
           fi
 
-          curl --fail --silent --show-error \
-            --max-time 30 \
+          echo "Health check URL is configured"
+
+          curl \
+            --location \
+            --fail-with-body \
+            --silent \
+            --show-error \
+            --retry 5 \
+            --retry-all-errors \
+            --retry-delay 10 \
+            --max-time 60 \
             "$RENDER_HEALTH_URL"
 
+          echo ""
           echo "Render health check completed successfully"
