@@ -1,0 +1,28 @@
+info:
+  name: Register
+  type: http
+
+http:
+  method: POST
+  url: http://localhost:5000/api/v1/auth/register
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Alex Johnson",
+        "email": "alex.johnson@example.com",
+        "password": "Password123!",
+        "whatsapp_number": "+14155552671",
+        "role": "SUPERADMIN"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+​
