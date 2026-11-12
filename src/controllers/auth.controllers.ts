@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { userRegistrationSchema, userSigninSchema } from "../zod/userSchema.js";
 import { query } from "../config/db.js";
 import { logger } from "../config/logger.js";
+import { generateAccessToken } from '../lib/tokengeneration.js'
 
 export const signUp = async (req: Request, res: Response) => {
   const parsedBody = userRegistrationSchema.safeParse(req.body);
@@ -126,7 +127,13 @@ export const signIn = async (req: Request, res: Response) => {
 
     logger.info(`User logged in: ${user.email}`);
 
-    return res.status(200).json({
+    const accessToken =  generateAccessToken(user.id, user.role);
+
+    return res.status(200).cookie("access_token", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+       maxAge: 7 * 24 * 60 * 60 * 1000
+    }).json({
       success: true,
       message: "Logged in successfully",
       data: {
@@ -134,7 +141,8 @@ export const signIn = async (req: Request, res: Response) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        whatsapp_number: user.whatsapp_number
+        whatsapp_number: user.whatsapp_number,
+        access_token: accessToken
       }
     });
   } catch (err: any) {
@@ -145,3 +153,17 @@ export const signIn = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+
+
+
+export const signOut = (req: Request, res: Response) => {
+  res.clearCookie("access_token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  }).json({
+    success: true,
+    message: "Logged out successfully"
+  });
+}
