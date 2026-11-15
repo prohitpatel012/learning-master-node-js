@@ -14,7 +14,7 @@ export const generateAccessToken = (
     payload,
     process.env.JWT_ACCESS_SECRET as string,
     {
-      expiresIn: "15m",
+      expiresIn: "60m",
       algorithm: "HS256",
     }
   );

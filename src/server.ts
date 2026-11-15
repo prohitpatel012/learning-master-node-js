@@ -4,6 +4,7 @@ import { logger } from "./config/logger.js";
 import { httpLogger } from "./config/http-logger.js";
 import { testConnection } from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
+import productRoutes from "./routes/product.routes.js";
 import bodyParser from "body-parser";
 
 const app = express();
@@ -27,6 +28,7 @@ app.get("/health-check", async (_req: Request, res: Response) => {
 
 // API routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/products", productRoutes)
 
 // 404 Not Found handler
 app.use((req: Request, res: Response) => {
